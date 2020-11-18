@@ -2,16 +2,20 @@ public class ASTPlus implements ASTNode {
 
 ASTNode lhs, rhs;
 
-        public int eval()
+        /*public double eval()
         { 
+        	double f=0;
         	if(lhs==null) {
-        		int v2 = rhs.eval();
-        		return v2;
+        		double v2 = rhs.eval();
+        		f=v2;
         	}
-        	int v1 = lhs.eval();
-        	int v2 = rhs.eval();
-        	return v1+v2; 
-        }
+        	else{
+        		double v1 = lhs.eval();
+        		double v2 = rhs.eval();
+        		f=v1+v2;
+        	}
+        	return f; 
+        }*/
     
         public ASTPlus(ASTNode l, ASTNode r)
         {
@@ -21,5 +25,30 @@ ASTNode lhs, rhs;
         {
         	rhs = r;
         }
+
+		@Override
+		public double eval(Environment e) {
+			// TODO Auto-generated method stub
+			double f=0;
+        	if(lhs==null) {
+        		double v2 = rhs.eval(e);
+        		f=v2;
+        	}
+        	else{
+        		double v1 = lhs.eval(e);
+        		double v2 = rhs.eval(e);
+        		f=v1+v2;
+        	}
+        	return f; 
+		}
+
+		@Override
+		public void compile(CodeBlock c, Environment e) {
+			lhs.compile(c, e);
+			rhs.compile(c, e);
+			c.emit("iadd");
+			// TODO Auto-generated method stub
+			
+		}
 }
 

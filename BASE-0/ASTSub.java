@@ -3,21 +3,22 @@ public class ASTSub implements ASTNode {
 
 	ASTNode lhs, rhs;
 
-    public int eval()
+	/*
+    public double eval()
     { 
+    	double f=0;
     	if(lhs==null) {
-    		int v2 = rhs.eval();
-    		return -v2;
+    		double v2 = rhs.eval();
+    		f-=v2;
     	}
-		int v1 = lhs.eval();
-		int v2 = rhs.eval();
-		return v1-v2; 
-	}
+    	else{ 
+    		double v1 = lhs.eval();
+    		double v2 = rhs.eval();
+    		f=v1-v2;
+    	}
+		return f; 
+	}*/
 
-    /*public ASTSub(ASTNode l, ASTNode r)
-    {
-    	lhs = l; rhs = r;
-    }*/
 
 	public ASTSub(ASTNode t1, ASTNode t2) {
 		lhs = t1; rhs = t2;
@@ -25,6 +26,33 @@ public class ASTSub implements ASTNode {
 	
 	public ASTSub(ASTNode t2) {
 		rhs = t2;
+	}
+
+
+	@Override
+	public double eval(Environment e) {
+		// TODO Auto-generated method stub
+		double f=0;
+    	if(lhs==null) {
+    		double v2 = rhs.eval(e);
+    		f-=v2;
+    	}
+    	else{ 
+    		double v1 = lhs.eval(e);
+    		double v2 = rhs.eval(e);
+    		f=v1-v2;
+    	}
+		return f; 
+	}
+
+
+	@Override
+	public void compile(CodeBlock c, Environment e) {
+		lhs.compile(c, e);
+		rhs.compile(c, e);
+		c.emit("isub");
+		// TODO Auto-generated method stub
+		
 	}
 
 }

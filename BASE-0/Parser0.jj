@@ -1,3 +1,6 @@
+options {
+  LOOKAHEAD=2;
+}
 PARSER_BEGIN(Parser)
 
 
@@ -9,14 +12,17 @@ public class Parser {
     Parser parser = new Parser(System.in);
     ASTNode exp;
 
+	Environment env = new Environment();
+	
     while (true) {
-    try {
-    exp = parser.Start();
-    System.out.println( exp.eval() );
-    } catch (Exception e) {
-      System.out.println ("Syntax Error!");
-      parser.ReInit(System.in);
-    }
+	    try {
+	      exp = parser.Start();
+	      System.out.println("Syntax is okay: " + exp.eval(env) );
+	    }
+	    catch (Exception e) {
+	      System.out.println ("Syntax Error!" + e.getMessage());
+	      parser.ReInit(System.in);
+	    }
     }
   }
 
@@ -27,15 +33,18 @@ PARSER_END(Parser)
 SKIP :
 {
   " "
-| "\t"
-| "\r"
 }
+/*| "\t"
+| "\r"
+| < "//" (~ ["\n","\r"])* ("\n"|"\r") >*/
 
 TOKEN :
 {
   < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
   |
-  < Num: (["0"-"9"]) + >
+  < NUMBER : <DIGITS> | <DIGITS> "." <DIGITS> | <DIGITS> "." | "."<DIGITS> >  
+  |
+  < DIGITS : (["0"-"9"])+ >  
   |
   < PLUS : "+" >
   |
@@ -49,13 +58,14 @@ TOKEN :
   |
   < RPAR : ")" >
   |
-  < EL: "\n" >
+  < EOL: "\n" | "\r" | "\r\n" >
 }
 
-ASTNode Start():
-{ ASTNode t; }
+ASTNode Start():{
+   ASTNode t;
+}
 {
-   t = Exp() <EL>
+   t = Exp() <EOL>
    { return t; }
 }
 
@@ -88,29 +98,15 @@ ASTNode Term() :
 
 ASTNode Fact() :
 { Token n; 
-  ASTNode t;}
-{
-   ( n=<Num> { t = new ASTNum(Integer.parseInt(n.image)); } | <LPAR> t=Exp() <RPAR> )
-   { return t; }
+  ASTNode t1;
+  ASTNode t2=null;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+{
+   ( n=<NUMBER> { t1 = new ASTNum(Double.parseDouble(n.image)); }
+   | <LPAR> t1=Exp() <RPAR> )
+   { return t1; }
+   | < MINUS > t1=Fact() { t1 = new ASTSub(t2,t1);
+   		return t1; }
+   
+   | < PLUS > t1=Fact() { return t1; }
+}
