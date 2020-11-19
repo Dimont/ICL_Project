@@ -1,16 +1,14 @@
 public class ASTNum implements ASTNode {
 
-double val;
+int val;
 
-        public double eval() { return val; }
-
-        public ASTNum(double d)
+        public ASTNum(int d)
         {
         	val = d;
         }
 
 		@Override
-		public double eval(Environment e) {
+		public int eval(Environment e) {
 			return val;
 		}
 

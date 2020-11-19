@@ -85,10 +85,10 @@ public class Parser implements ParserConstants {
   Token n;
   ASTNode t1;
   ASTNode t2=null;
-    if (jj_2_9(2)) {
+    if (jj_2_10(2)) {
       if (jj_2_7(2)) {
         n = jj_consume_token(NUMBER);
-                  t1 = new ASTNum(Double.parseDouble(n.image));
+                      t1 = new ASTNum(Integer.parseInt(n.image));
       } else if (jj_2_8(2)) {
         jj_consume_token(LPAR);
         t1 = Exp();
@@ -98,15 +98,31 @@ public class Parser implements ParserConstants {
         throw new ParseException();
       }
      {if (true) return t1;}
-    } else if (jj_2_10(2)) {
+    } else if (jj_2_11(2)) {
       jj_consume_token(MINUS);
       t1 = Fact();
-                           t1 = new ASTSub(t2,t1);
-                {if (true) return t1;}
-    } else if (jj_2_11(2)) {
+                           t1 = new ASTSub(t2,t1);      {if (true) return t1;}
+    } else if (jj_2_12(2)) {
       jj_consume_token(PLUS);
       t1 = Fact();
                           {if (true) return t1;}
+    } else if (jj_2_13(2)) {
+      n = jj_consume_token(Id);
+      label_2:
+      while (true) {
+        if (jj_2_9(2)) {
+          ;
+        } else {
+          break label_2;
+        }
+        jj_consume_token(EQ);
+        t2 = Fact();
+      }
+        if(t2 != null)
+                t1 = new ASTDef(n.image, t2);
+        else
+                t1 = new ASTId(n.image);
+        {if (true) return t1;}
     } else {
       jj_consume_token(-1);
       throw new ParseException();
@@ -191,15 +207,23 @@ public class Parser implements ParserConstants {
     finally { jj_save(10, xla); }
   }
 
-  static private boolean jj_3_10() {
-    if (jj_scan_token(MINUS)) return true;
-    if (jj_3R_4()) return true;
-    return false;
+  static private boolean jj_2_12(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_12(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(11, xla); }
+  }
+
+  static private boolean jj_2_13(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_13(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(12, xla); }
   }
 
   static private boolean jj_3_8() {
     if (jj_scan_token(LPAR)) return true;
-    if (jj_3R_3()) return true;
+    if (jj_3R_4()) return true;
     return false;
   }
 
@@ -213,20 +237,23 @@ public class Parser implements ParserConstants {
     return false;
   }
 
-  static private boolean jj_3R_4() {
+  static private boolean jj_3R_5() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_9()) {
-    jj_scanpos = xsp;
     if (jj_3_10()) {
     jj_scanpos = xsp;
-    if (jj_3_11()) return true;
+    if (jj_3_11()) {
+    jj_scanpos = xsp;
+    if (jj_3_12()) {
+    jj_scanpos = xsp;
+    if (jj_3_13()) return true;
+    }
     }
     }
     return false;
   }
 
-  static private boolean jj_3_9() {
+  static private boolean jj_3_10() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_7()) {
@@ -243,7 +270,7 @@ public class Parser implements ParserConstants {
     jj_scanpos = xsp;
     if (jj_3_5()) return true;
     }
-    if (jj_3R_2()) return true;
+    if (jj_3R_3()) return true;
     return false;
   }
 
@@ -252,8 +279,14 @@ public class Parser implements ParserConstants {
     return false;
   }
 
-  static private boolean jj_3R_3() {
-    if (jj_3R_2()) return true;
+  static private boolean jj_3R_4() {
+    if (jj_3R_3()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_9() {
+    if (jj_scan_token(EQ)) return true;
+    if (jj_3R_5()) return true;
     return false;
   }
 
@@ -267,14 +300,8 @@ public class Parser implements ParserConstants {
     return false;
   }
 
-  static private boolean jj_3R_2() {
-    if (jj_3R_4()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_11() {
-    if (jj_scan_token(PLUS)) return true;
-    if (jj_3R_4()) return true;
+  static private boolean jj_3R_3() {
+    if (jj_3R_5()) return true;
     return false;
   }
 
@@ -285,7 +312,29 @@ public class Parser implements ParserConstants {
     jj_scanpos = xsp;
     if (jj_3_3()) return true;
     }
-    if (jj_3R_2()) return true;
+    if (jj_3R_3()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_13() {
+    if (jj_scan_token(Id)) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_9()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  static private boolean jj_3_12() {
+    if (jj_scan_token(PLUS)) return true;
+    if (jj_3R_5()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_11() {
+    if (jj_scan_token(MINUS)) return true;
+    if (jj_3R_5()) return true;
     return false;
   }
 
@@ -309,7 +358,7 @@ public class Parser implements ParserConstants {
    private static void jj_la1_init_0() {
       jj_la1_0 = new int[] {};
    }
-  static final private JJCalls[] jj_2_rtns = new JJCalls[11];
+  static final private JJCalls[] jj_2_rtns = new JJCalls[13];
   static private boolean jj_rescan = false;
   static private int jj_gc = 0;
 
@@ -514,7 +563,7 @@ public class Parser implements ParserConstants {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[12];
+    boolean[] la1tokens = new boolean[13];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -528,7 +577,7 @@ public class Parser implements ParserConstants {
         }
       }
     }
-    for (int i = 0; i < 12; i++) {
+    for (int i = 0; i < 13; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
@@ -555,7 +604,7 @@ public class Parser implements ParserConstants {
 
   static private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 11; i++) {
+    for (int i = 0; i < 13; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -573,6 +622,8 @@ public class Parser implements ParserConstants {
             case 8: jj_3_9(); break;
             case 9: jj_3_10(); break;
             case 10: jj_3_11(); break;
+            case 11: jj_3_12(); break;
+            case 12: jj_3_13(); break;
           }
         }
         p = p.next;

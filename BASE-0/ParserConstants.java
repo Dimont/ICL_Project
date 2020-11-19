@@ -28,6 +28,8 @@ public interface ParserConstants {
   int RPAR = 10;
   /** RegularExpression Id. */
   int EOL = 11;
+  /** RegularExpression Id. */
+  int EQ = 12;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -46,6 +48,7 @@ public interface ParserConstants {
     "\"(\"",
     "\")\"",
     "<EOL>",
+    "\"=\"",
   };
 
 }

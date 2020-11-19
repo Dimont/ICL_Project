@@ -9,10 +9,10 @@ public class ASTDiv implements ASTNode {
 
 
 	@Override
-	public double eval(Environment e) {
+	public int eval(Environment e) {
 		// TODO Auto-generated method stub
-		double v1 = lhs.eval(e);
-    	double v2 = rhs.eval(e);
+		int v1 = lhs.eval(e);
+    	int v2 = rhs.eval(e);
 		return v1/v2; 
 	}
 

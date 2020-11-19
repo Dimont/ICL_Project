@@ -30,16 +30,15 @@ public class ASTSub implements ASTNode {
 
 
 	@Override
-	public double eval(Environment e) {
-		// TODO Auto-generated method stub
-		double f=0;
+	public int eval(Environment e) {
+		int f=0;
     	if(lhs==null) {
-    		double v2 = rhs.eval(e);
+    		int v2 = rhs.eval(e);
     		f-=v2;
     	}
-    	else{ 
-    		double v1 = lhs.eval(e);
-    		double v2 = rhs.eval(e);
+    	else { 
+    		int v1 = lhs.eval(e);
+    		int v2 = rhs.eval(e);
     		f=v1-v2;
     	}
 		return f; 
@@ -51,8 +50,6 @@ public class ASTSub implements ASTNode {
 		lhs.compile(c, e);
 		rhs.compile(c, e);
 		c.emit("isub");
-		// TODO Auto-generated method stub
-		
 	}
 
 }

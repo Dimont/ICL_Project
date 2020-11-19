@@ -5,7 +5,7 @@ public class Environment {
 
 	Stack<Environment> s;
 	HashMap<String,Integer> currentLevel;
-	
+
 	//push level
 	Environment	beginScope() {
 		return s.push(new Environment());
@@ -18,22 +18,29 @@ public class Environment {
 	}
 
 
-	void	assoc(String	id,	int	val) throws IDDeclaredTwiceException {
-		if(currentLevel.containsKey(id))
-			throw new IDDeclaredTwiceException();
-		currentLevel.put(id, val);
+	void	assoc(String	id,	int	val) {
+		try {
+			if(currentLevel.containsKey(id))
+				throw new IDDeclaredTwiceException();
+			
+			currentLevel.put(id, val);
+		} catch(IDDeclaredTwiceException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 
 	int	find(String	id) {
-		return currentLevel.get(id);
+		if(currentLevel.containsKey(id))
+			return currentLevel.get(id);
+		else return 0; 
 	}
 
 
 	public Environment() {
 		if(s == null)
 			s = new Stack<Environment>();
-		
+
 		currentLevel = new HashMap<String,Integer>();
 	}
 }

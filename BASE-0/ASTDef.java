@@ -1,14 +1,19 @@
 
 public class ASTDef implements ASTNode{
 	String id;
-	ASTNode init;
-	ASTNode body;
+	ASTNode val;
 	
 	
+	public ASTDef(String id, ASTNode t1) {
+		this.id = id;
+		val = t1;
+	}
+
+
 	@Override
-	public double eval(Environment e) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int eval(Environment e) {
+		e.assoc(id, val.eval(e));
+		return val.eval(e);
 	}
 
 

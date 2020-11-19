@@ -40,7 +40,7 @@ SKIP :
 
 TOKEN :
 {
-  < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
+   < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
   |
   < NUMBER : <DIGITS> | <DIGITS> "." <DIGITS> | <DIGITS> "." | "."<DIGITS> >  
   |
@@ -59,6 +59,8 @@ TOKEN :
   < RPAR : ")" >
   |
   < EOL: "\n" | "\r" | "\r\n" >
+| 
+  < EQ : "=" >
 }
 
 ASTNode Start():{
@@ -102,11 +104,15 @@ ASTNode Fact() :
   ASTNode t2=null;
 }
 {
-   ( n=<NUMBER> { t1 = new ASTNum(Double.parseDouble(n.image)); }
-   | <LPAR> t1=Exp() <RPAR> )
+   ( n=<NUMBER>    {  t1 = new ASTNum(Integer.parseInt(n.image)); } 	 | <LPAR> t1=Exp() <RPAR> )
    { return t1; }
-   | < MINUS > t1=Fact() { t1 = new ASTSub(t2,t1);
-   		return t1; }
-   
+   | < MINUS > t1=Fact() { t1 = new ASTSub(t2,t1); 	return t1; }
    | < PLUS > t1=Fact() { return t1; }
+   | n = < Id > ( < EQ > t2 = Fact())*
+   { 
+   	if(t2 != null)
+   		t1 = new ASTDef(n.image, t2);
+   	else
+   		t1 = new ASTId(n.image);
+	return t1; }
 }

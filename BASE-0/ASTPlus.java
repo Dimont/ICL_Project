@@ -27,16 +27,16 @@ ASTNode lhs, rhs;
         }
 
 		@Override
-		public double eval(Environment e) {
+		public int eval(Environment e) {
 			// TODO Auto-generated method stub
-			double f=0;
+			int f=0;
         	if(lhs==null) {
-        		double v2 = rhs.eval(e);
+        		int v2 = rhs.eval(e);
         		f=v2;
         	}
         	else{
-        		double v1 = lhs.eval(e);
-        		double v2 = rhs.eval(e);
+        		int v1 = lhs.eval(e);
+        		int v2 = rhs.eval(e);
         		f=v1+v2;
         	}
         	return f; 

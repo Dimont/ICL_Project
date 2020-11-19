@@ -18,7 +18,7 @@ public class ASTMult implements ASTNode {
 
 
 	@Override
-	public double eval(Environment e) {
+	public int eval(Environment e) {
 		// TODO Auto-generated method stub
 		return lhs.eval(e)*rhs.eval(e);
 	}
