@@ -9,27 +9,33 @@ public interface ParserConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int Id = 2;
+  int DEF = 2;
   /** RegularExpression Id. */
-  int NUMBER = 3;
+  int IN = 3;
   /** RegularExpression Id. */
-  int DIGITS = 4;
+  int END = 4;
   /** RegularExpression Id. */
-  int PLUS = 5;
+  int Id = 5;
   /** RegularExpression Id. */
-  int MINUS = 6;
+  int NUMBER = 6;
   /** RegularExpression Id. */
-  int TIMES = 7;
+  int DIGITS = 7;
   /** RegularExpression Id. */
-  int DIV = 8;
+  int PLUS = 8;
   /** RegularExpression Id. */
-  int LPAR = 9;
+  int MINUS = 9;
   /** RegularExpression Id. */
-  int RPAR = 10;
+  int TIMES = 10;
   /** RegularExpression Id. */
-  int EOL = 11;
+  int DIV = 11;
   /** RegularExpression Id. */
-  int EQ = 12;
+  int LPAR = 12;
+  /** RegularExpression Id. */
+  int RPAR = 13;
+  /** RegularExpression Id. */
+  int EOL = 14;
+  /** RegularExpression Id. */
+  int EQ = 15;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -38,6 +44,9 @@ public interface ParserConstants {
   String[] tokenImage = {
     "<EOF>",
     "\" \"",
+    "<DEF>",
+    "<IN>",
+    "<END>",
     "<Id>",
     "<NUMBER>",
     "<DIGITS>",

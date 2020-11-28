@@ -83,7 +83,7 @@ public class Parser implements ParserConstants {
 
   static final public ASTNode Fact() throws ParseException {
   Token n;
-  ASTNode t1;
+  ASTNode t1=null;
   ASTNode t2=null;
     if (jj_2_10(2)) {
       if (jj_2_7(2)) {
@@ -108,21 +108,25 @@ public class Parser implements ParserConstants {
                           {if (true) return t1;}
     } else if (jj_2_13(2)) {
       n = jj_consume_token(Id);
+                  t1 = new ASTId(n.image); {if (true) return t1;}
+    } else if (jj_2_14(2)) {
+      n = jj_consume_token(DEF);
       label_2:
       while (true) {
+        jj_consume_token(Id);
+        jj_consume_token(EQ);
+        t1 = Fact();
+                                                t1 = new ASTDef(n.image, t1);
         if (jj_2_9(2)) {
           ;
         } else {
           break label_2;
         }
-        jj_consume_token(EQ);
-        t2 = Fact();
       }
-        if(t2 != null)
-                t1 = new ASTDef(n.image, t2);
-        else
-                t1 = new ASTId(n.image);
-        {if (true) return t1;}
+      jj_consume_token(IN);
+      t2 = Exp();
+      jj_consume_token(END);
+                                                    {if (true) return t2;}
     } else {
       jj_consume_token(-1);
       throw new ParseException();
@@ -221,6 +225,72 @@ public class Parser implements ParserConstants {
     finally { jj_save(12, xla); }
   }
 
+  static private boolean jj_2_14(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_14(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(13, xla); }
+  }
+
+  static private boolean jj_3R_4() {
+    if (jj_3R_3()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_5() {
+    if (jj_scan_token(DIV)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_2() {
+    if (jj_scan_token(PLUS)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_3() {
+    if (jj_3R_5()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_1() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_2()) {
+    jj_scanpos = xsp;
+    if (jj_3_3()) return true;
+    }
+    if (jj_3R_3()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_14() {
+    if (jj_scan_token(DEF)) return true;
+    Token xsp;
+    if (jj_3_9()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_9()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  static private boolean jj_3_13() {
+    if (jj_scan_token(Id)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_12() {
+    if (jj_scan_token(PLUS)) return true;
+    if (jj_3R_5()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_11() {
+    if (jj_scan_token(MINUS)) return true;
+    if (jj_3R_5()) return true;
+    return false;
+  }
+
   static private boolean jj_3_8() {
     if (jj_scan_token(LPAR)) return true;
     if (jj_3R_4()) return true;
@@ -246,7 +316,10 @@ public class Parser implements ParserConstants {
     jj_scanpos = xsp;
     if (jj_3_12()) {
     jj_scanpos = xsp;
-    if (jj_3_13()) return true;
+    if (jj_3_13()) {
+    jj_scanpos = xsp;
+    if (jj_3_14()) return true;
+    }
     }
     }
     }
@@ -279,62 +352,9 @@ public class Parser implements ParserConstants {
     return false;
   }
 
-  static private boolean jj_3R_4() {
-    if (jj_3R_3()) return true;
-    return false;
-  }
-
   static private boolean jj_3_9() {
-    if (jj_scan_token(EQ)) return true;
-    if (jj_3R_5()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_5() {
-    if (jj_scan_token(DIV)) return true;
-    return false;
-  }
-
-  static private boolean jj_3_2() {
-    if (jj_scan_token(PLUS)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_3() {
-    if (jj_3R_5()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_1() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_2()) {
-    jj_scanpos = xsp;
-    if (jj_3_3()) return true;
-    }
-    if (jj_3R_3()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_13() {
     if (jj_scan_token(Id)) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_9()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  static private boolean jj_3_12() {
-    if (jj_scan_token(PLUS)) return true;
-    if (jj_3R_5()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_11() {
-    if (jj_scan_token(MINUS)) return true;
-    if (jj_3R_5()) return true;
+    if (jj_scan_token(EQ)) return true;
     return false;
   }
 
@@ -358,7 +378,7 @@ public class Parser implements ParserConstants {
    private static void jj_la1_init_0() {
       jj_la1_0 = new int[] {};
    }
-  static final private JJCalls[] jj_2_rtns = new JJCalls[13];
+  static final private JJCalls[] jj_2_rtns = new JJCalls[14];
   static private boolean jj_rescan = false;
   static private int jj_gc = 0;
 
@@ -563,7 +583,7 @@ public class Parser implements ParserConstants {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[13];
+    boolean[] la1tokens = new boolean[16];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -577,7 +597,7 @@ public class Parser implements ParserConstants {
         }
       }
     }
-    for (int i = 0; i < 13; i++) {
+    for (int i = 0; i < 16; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
@@ -604,7 +624,7 @@ public class Parser implements ParserConstants {
 
   static private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 13; i++) {
+    for (int i = 0; i < 14; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -624,6 +644,7 @@ public class Parser implements ParserConstants {
             case 10: jj_3_11(); break;
             case 11: jj_3_12(); break;
             case 12: jj_3_13(); break;
+            case 13: jj_3_14(); break;
           }
         }
         p = p.next;

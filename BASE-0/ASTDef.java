@@ -12,15 +12,19 @@ public class ASTDef implements ASTNode{
 
 	@Override
 	public int eval(Environment e) {
-		e.assoc(id, val.eval(e));
-		return val.eval(e);
+		int res = 0;
+		Environment env = e.beginScope();
+		res = val.eval(env);
+		env.assoc(id, res);
+		env.endScope();
+		return res;
 	}
 
 
 	@Override
 	public void compile(CodeBlock c, Environment e) {
-		// TODO Auto-generated method stub
-		
+		val.compile(c, e);
+		c.emit("");
 	}
 	
 	

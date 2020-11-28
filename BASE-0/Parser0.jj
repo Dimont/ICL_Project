@@ -40,6 +40,12 @@ SKIP :
 
 TOKEN :
 {
+  < DEF : "def" | "DEF" >
+	|
+	< IN : "in" | "IN" >
+	|
+	< END : "end" | "END" > 
+	| 
    < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
   |
   < NUMBER : <DIGITS> | <DIGITS> "." <DIGITS> | <DIGITS> "." | "."<DIGITS> >  
@@ -100,7 +106,7 @@ ASTNode Term() :
 
 ASTNode Fact() :
 { Token n; 
-  ASTNode t1;
+  ASTNode t1=null;
   ASTNode t2=null;
 }
 {
@@ -108,11 +114,8 @@ ASTNode Fact() :
    { return t1; }
    | < MINUS > t1=Fact() { t1 = new ASTSub(t2,t1); 	return t1; }
    | < PLUS > t1=Fact() { return t1; }
-   | n = < Id > ( < EQ > t2 = Fact())*
-   { 
-   	if(t2 != null)
-   		t1 = new ASTDef(n.image, t2);
-   	else
-   		t1 = new ASTId(n.image);
-	return t1; }
+   | n = < Id > { t1 = new ASTId(n.image); return t1; }
+   | n = < DEF > ( < Id > < EQ > t1 = Fact() {  t1 = new ASTDef(n.image, t1); } )+
+   			< IN > t2 = Exp() < END > { return t2; }
+  
 }

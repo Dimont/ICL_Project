@@ -3,7 +3,7 @@ import java.util.Stack;
 
 public class Environment {
 
-	Stack<Environment> s;
+	static Stack<Environment> s;
 	HashMap<String,Integer> currentLevel;
 
 	//push level
@@ -14,7 +14,8 @@ public class Environment {
 
 	//pop top level
 	Environment	endScope() {
-		return s.pop();
+		s.pop();
+		return s.peek();
 	}
 
 
@@ -31,16 +32,21 @@ public class Environment {
 
 
 	int	find(String	id) {
-		if(currentLevel.containsKey(id))
-			return currentLevel.get(id);
-		else return 0; 
+		for(Environment e : s)
+			if(e.currentLevel.containsKey(id)) {
+				return currentLevel.get(id);
+			}
+		
+		return 0; 
 	}
 
 
 	public Environment() {
-		if(s == null)
-			s = new Stack<Environment>();
-
 		currentLevel = new HashMap<String,Integer>();
+		
+		if(s == null) {
+			s = new Stack<Environment>();
+			s.push(this);
+		}
 	}
 }
