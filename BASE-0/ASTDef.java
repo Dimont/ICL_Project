@@ -1,32 +1,63 @@
+import java.util.ArrayList;
+import exceptions.DuplicateIdentifierException;
+import exceptions.TypeErrorException;
+import exceptions.UndeclaredIdentifierException;
+import tipos.IType;
+import valores.IValue;
+
 
 public class ASTDef implements ASTNode{
-	String id;
-	ASTNode val;
+	ArrayList<Binding> def;
+	ASTNode exp;
 	
-	
-	public ASTDef(String id, ASTNode t1) {
-		this.id = id;
-		val = t1;
+	public ASTDef(ArrayList<Binding> id, ASTNode exp) {
+		this.def = id;
+		this.exp = exp;
 	}
 
-
-	@Override
-	public int eval(Environment e) {
-		int res = 0;
-		Environment env = e.beginScope();
-		res = val.eval(env);
-		env.assoc(id, res);
-		env.endScope();
-		return res;
+	public IValue eval(Environment<IValue> e) throws UndeclaredIdentifierException, DuplicateIdentifierException {
+		IValue value;
+		Environment<IValue> newEnvironment = e.beginScope();
+		
+		for(Binding def: def) {
+			IValue idVal = def.getExp().eval(e);
+			newEnvironment.assoc(def.getId(), idVal);
+		}
+		value = exp.eval(newEnvironment);
+		newEnvironment.endScope();
+		return value;
+		
+		/*//def in
+		e.beginScope();
+		//shit between
+		e.assoc(id, val.eval(e));
+		//end
+		e.endScope();		
+		
+		return val.eval(e);*/
 	}
 
+	/*public void compile(CodeBlock c, Environment e) {
+		// TODO Auto-generated method stub
+	}*/
 
-	@Override
-	public void compile(CodeBlock c, Environment e) {
-		val.compile(c, e);
-		c.emit("");
+	public IType typecheck(Environment<IType> e)
+			throws UndeclaredIdentifierException, DuplicateIdentifierException, TypeErrorException {
+		IType value;
+		Environment<IType> newEnvironment = e.beginScope();
+		for( Binding def: def) {
+			IType idValue = def.getExp().typecheck(e);
+			newEnvironment.assoc(def.getId(), idValue);
+		}
+		value = exp.typecheck(newEnvironment);
+		newEnvironment.endScope();
+		return value;
+	}	
+
+	public String toString() {
+		String str = "";
+    	for(Binding bind: def)
+    		str += bind.getId() + " = " + bind.getExp().toString();
+    	return "def " + str + " in " + exp.toString() + " end";
 	}
-	
-	
-	
 }

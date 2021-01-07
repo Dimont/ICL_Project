@@ -1,8 +1,10 @@
 options {
   LOOKAHEAD=2;
 }
+
 PARSER_BEGIN(Parser)
 
+import java.util.ArrayList;
 
 /** ID lister. */
 public class Parser {
@@ -40,12 +42,6 @@ SKIP :
 
 TOKEN :
 {
-  < DEF : "def" | "DEF" >
-	|
-	< IN : "in" | "IN" >
-	|
-	< END : "end" | "END" > 
-	| 
    < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
   |
   < NUMBER : <DIGITS> | <DIGITS> "." <DIGITS> | <DIGITS> "." | "."<DIGITS> >  
@@ -65,16 +61,80 @@ TOKEN :
   < RPAR : ")" >
   |
   < EOL: "\n" | "\r" | "\r\n" >
-| 
-  < EQ : "=" >
+  | 
+  < ASSOC : "=" >
+  |
+  < DEF :"def" >
+  |
+  < IN:"in" >
+  |
+  < END:"end" >
+  |
+  < TRUE:"true" >
+  |
+  < FALSE:"false" >
+  |
+  < AND:"&&" >
+  |
+  < OR:"||" >
+  |
+  < VAR:"var" >
+  |
+  < ASSIGN:":=" >
+  |
+  < EQ:"==" >
+ 
 }
 
 ASTNode Start():{
    ASTNode t;
 }
 {
-   t = Exp() <EOL>
+   t = TopExp() <EOL>
    { return t; }
+}
+
+ASTNode TopExp():
+{	ASTNode t; }
+{  t=AssignExp()
+	{ return t; }
+}
+
+ASTNode AssignExp():
+{ ASTNode t1,t2; }
+{
+  t1=BoolExp()
+  ( < ASSIGN > t2 = BoolExp()
+  	{ t1 = new ASTAssign(t1,t2); }
+  )*
+	{  return t1; } 
+}
+
+ASTNode BoolExp():
+{  ASTNode t1, t2; }
+{  t1 = DisjExp()
+  ( < AND > t2 = DisjExp()
+	{  t1 = new ASTAnd(t1,t2);  }
+  )*
+  {  return t1;  }
+}
+
+ASTNode DisjExp():
+{  ASTNode t1, t2; }
+{  t1 = EqExp()
+  ( < OR > t2 = EqExp()
+	  {  t1 = new ASTOr(t1,t2);  }
+  )*
+  {  return t1; }
+}
+
+ASTNode EqExp():
+{  ASTNode t1, t2; }
+{  t1 = Exp()
+  [ < EQ > t2 = Exp()
+	{  t1 = new ASTEq(t1,t2);  }
+  ]
+  {  return t1;  }
 }
 
 ASTNode Exp() :
@@ -94,7 +154,8 @@ ASTNode Term() :
 {Token op;
   ASTNode t1, t2;}
 {
-     t1 = Fact() ( ( op=<TIMES> | op=<DIV> ) t2 = Term() 
+     t1 = Fact() ( ( op=<TIMES> | op=<DIV> )
+     t2 = Fact() 
  		 { if (op.kind == TIMES) 
                          t1 = new ASTMult(t1,t2);
                    else  t1 = new ASTDiv(t1,t2);
@@ -103,19 +164,52 @@ ASTNode Term() :
      { return t1; } 
 }
 
-
 ASTNode Fact() :
 { Token n; 
-  ASTNode t1=null;
+  ASTNode t1;
   ASTNode t2=null;
 }
 {
-   ( n=<NUMBER>    {  t1 = new ASTNum(Integer.parseInt(n.image)); } 	 | <LPAR> t1=Exp() <RPAR> )
-   { return t1; }
-   | < MINUS > t1=Fact() { t1 = new ASTSub(t2,t1); 	return t1; }
-   | < PLUS > t1=Fact() { return t1; }
-   | n = < Id > { t1 = new ASTId(n.image); return t1; }
-   | n = < DEF > ( < Id > < EQ > t1 = Fact() {  t1 = new ASTDef(n.image, t1); } )+
-   			< IN > t2 = Exp() < END > { return t2; }
-  
+   n=<DIGITS>    {  t1 = new ASTNum(Integer.parseInt(n.image)); return t1;}
+   |
+   <LPAR> t1=TopExp() <RPAR> { return t1; }
+   |
+   < VAR ><LPAR > t1 = TopExp() <RPAR > { return new ASTVar(t1); }
+   |
+   < MINUS > t1=Fact() { return new ASTNeg(t1); }
+   |
+   < PLUS > t1=Fact() { return t1; }
+   |
+   < DEF > t1=Fact() < IN > t2=Fact() < END >
+   |
+   n=<TRUE> { t1 = new ASTBoolean(true); return t1; } 
+   | 
+   n=<FALSE> { t2 = new ASTBoolean(false); return t2; }
+   |
+   n = < Id > { return new ASTId(n.image); }
+   |
+   t1 = Def() { return t1; }
+   |
+   < TIMES > t1 = Fact() { return new ASTDeRef(t1); }
+   /*{ 
+   	if(t2 != null)
+   		t1 = new ASTDef(n.image, t2);
+   	else
+   		t1 = new ASTId(n.image);
+   		
+	return t1; }*/
+}
+
+ASTNode Def():{
+	Token n;
+	ASTNode t1, t2;
+	ArrayList<Binding> binds = new ArrayList<Binding>(); }
+{
+  <DEF>
+	  ( n = <Id> <ASSOC> t1 = TopExp()
+	  { binds.add(new Binding(n.image,t1)); }
+	  )+
+  <IN> t2 = TopExp() <END> {
+	    return new ASTDef(binds, t2);
+	  }
 }

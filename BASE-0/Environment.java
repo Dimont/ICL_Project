@@ -1,52 +1,87 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 
-public class Environment {
+import exceptions.DuplicateIdentifierException;
+import exceptions.UndeclaredIdentifierException;
 
-	static Stack<Environment> s;
-	HashMap<String,Integer> currentLevel;
+
+public class Environment<T> {
+
+	//static Stack<Environment> s;
+	//HashMap<String,Integer> currentLevel;
+	
+	Environment<T> env;
+	ArrayList<Assoc<T>> assoc;
 
 	//push level
-	Environment	beginScope() {
-		return s.push(new Environment());
+	Environment<T>	beginScope() {
+		//return s.push(new Environment());
+		return new Environment<T>(this);
 	}
-
 
 	//pop top level
-	Environment	endScope() {
-		s.pop();
-		return s.peek();
+	Environment<T>	endScope() {
+		//return s.pop();
+		return env;
 	}
 
-
-	void	assoc(String	id,	int	val) {
-		try {
+	void assoc(String	id,	T val) throws DuplicateIdentifierException{
+		for(Assoc<T> asso: assoc) {
+			if(asso.id.equals(id)) {
+				throw new DuplicateIdentifierException(id);
+			}
+		}
+		assoc.add(new Assoc<T>(id, val));
+		
+		 /*try {
 			if(currentLevel.containsKey(id))
 				throw new IDDeclaredTwiceException();
 			
 			currentLevel.put(id, val);
 		} catch(IDDeclaredTwiceException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
-
-	int	find(String	id) {
-		for(Environment e : s)
-			if(e.currentLevel.containsKey(id)) {
-				return currentLevel.get(id);
+	public T find(String id) throws UndeclaredIdentifierException {
+		Environment<T> currentLevel = this;
+		while(currentLevel!=null) {
+			for(Assoc<T> assoc: currentLevel.assoc) {
+				if(assoc.id.equals(id)) {
+					return assoc.val;
+				}
 			}
+			currentLevel = currentLevel.env;
+		}
+		throw new UndeclaredIdentifierException(id);
 		
-		return 0; 
+		/*if(currentLevel.containsKey(id))
+			return currentLevel.get(id);
+		else return 0; */
 	}
-
 
 	public Environment() {
-		currentLevel = new HashMap<String,Integer>();
+		/*if(s == null)
+			s = new Stack<Environment>();*/
+		//currentLevel = new HashMap<String,Integer>();
 		
-		if(s == null) {
-			s = new Stack<Environment>();
-			s.push(this);
+		this.env=null;
+		this.assoc = new ArrayList<Assoc<T>>();
+	}
+	
+	public Environment(Environment<T> env) {
+		this();
+		this.env = env;
+	}
+	
+	static class Assoc<T>{
+		String id;
+		T val;
+		
+		Assoc(String id, T val){
+			this.id = id;
+			this.val = val;
 		}
 	}
 }

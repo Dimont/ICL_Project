@@ -1,5 +1,9 @@
+import exceptions.DuplicateIdentifierException;
+import exceptions.UndeclaredIdentifierException;
+import valores.IValue;
+import valores.IntValue;
 
-public class ASTSub implements ASTNode {
+public class ASTSub extends ASTBinOp {
 
 	ASTNode lhs, rhs;
 
@@ -21,17 +25,19 @@ public class ASTSub implements ASTNode {
 
 
 	public ASTSub(ASTNode t1, ASTNode t2) {
+		super(t1, t2);
 		lhs = t1; rhs = t2;
 	}
 	
 	public ASTSub(ASTNode t2) {
+		super(t2,t2);
 		rhs = t2;
 	}
 
-
-	@Override
-	public int eval(Environment e) {
-		int f=0;
+	public IValue eval(Environment<IValue> e) throws UndeclaredIdentifierException, DuplicateIdentifierException {
+		
+		return new IntValue(((IntValue) lhs.eval(e)).getValue() - ((IntValue) rhs.eval(e)).getValue());
+		/*int f=0;
     	if(lhs==null) {
     		int v2 = rhs.eval(e);
     		f-=v2;
@@ -41,15 +47,17 @@ public class ASTSub implements ASTNode {
     		int v2 = rhs.eval(e);
     		f=v1-v2;
     	}
-		return f; 
+		return f;*/ 
+	}
+	
+	public String toString() {
+		return lhs.toString() + " - " + rhs.toString();
 	}
 
-
-	@Override
-	public void compile(CodeBlock c, Environment e) {
+	/*public void compile(CodeBlock c, Environment e) {
 		lhs.compile(c, e);
 		rhs.compile(c, e);
 		c.emit("isub");
-	}
+	}*/
 
 }
