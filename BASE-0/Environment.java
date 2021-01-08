@@ -7,26 +7,21 @@ import exceptions.UndeclaredIdentifierException;
 
 
 public class Environment<T> {
-
-	//static Stack<Environment> s;
-	//HashMap<String,Integer> currentLevel;
 	
 	Environment<T> env;
 	ArrayList<Assoc<T>> assoc;
 
 	//push level
-	Environment<T>	beginScope() {
-		//return s.push(new Environment());
+	public Environment<T>	beginScope() {
 		return new Environment<T>(this);
 	}
 
 	//pop top level
-	Environment<T>	endScope() {
-		//return s.pop();
+	public Environment<T>	endScope() {
 		return env;
 	}
 
-	void assoc(String	id,	T val) throws DuplicateIdentifierException{
+	public void assoc(String	id,	T val) throws DuplicateIdentifierException{
 		for(Assoc<T> asso: assoc) {
 			if(asso.id.equals(id)) {
 				throw new DuplicateIdentifierException(id);
@@ -55,22 +50,14 @@ public class Environment<T> {
 			currentLevel = currentLevel.env;
 		}
 		throw new UndeclaredIdentifierException(id);
-		
-		/*if(currentLevel.containsKey(id))
-			return currentLevel.get(id);
-		else return 0; */
 	}
 
 	public Environment() {
-		/*if(s == null)
-			s = new Stack<Environment>();*/
-		//currentLevel = new HashMap<String,Integer>();
-		
 		this.env=null;
 		this.assoc = new ArrayList<Assoc<T>>();
 	}
 	
-	public Environment(Environment<T> env) {
+	private Environment(Environment<T> env) {
 		this();
 		this.env = env;
 	}

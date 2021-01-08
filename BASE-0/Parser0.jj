@@ -1,16 +1,17 @@
 options {
-  LOOKAHEAD=2;
+  
+  STATIC = false;
 }
-
 PARSER_BEGIN(Parser)
 
 import java.util.ArrayList;
+import exceptions.*;
 
 /** ID lister. */
 public class Parser {
 
   /** Main entry point. */
-  public static void main(String args[]) {
+  /*public static void main(String args[]) {
     Parser parser = new Parser(System.in);
     ASTNode exp;
 
@@ -26,7 +27,7 @@ public class Parser {
 	      parser.ReInit(System.in);
 	    }
     }
-  }
+  }*/
 
 }
 
@@ -35,16 +36,15 @@ PARSER_END(Parser)
 SKIP :
 {
   " "
+  |
+  "\t"
+  |
+  "\r" 
 }
-/*| "\t"
-| "\r"
-| < "//" (~ ["\n","\r"])* ("\n"|"\r") >*/
 
 TOKEN :
 {
    < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
-  |
-  < NUMBER : <DIGITS> | <DIGITS> "." <DIGITS> | <DIGITS> "." | "."<DIGITS> >  
   |
   < DIGITS : (["0"-"9"])+ >  
   |
@@ -60,7 +60,7 @@ TOKEN :
   |
   < RPAR : ")" >
   |
-  < EOL: "\n" | "\r" | "\r\n" >
+  < EOL: "\n" >
   | 
   < ASSOC : "=" >
   |
@@ -150,8 +150,8 @@ ASTNode Exp() :
      { return t1; } 
 }
 
-ASTNode Term() :
-{Token op;
+ASTNode Term() :{
+  Token op;
   ASTNode t1, t2;}
 {
      t1 = Fact() ( ( op=<TIMES> | op=<DIV> )
@@ -160,7 +160,7 @@ ASTNode Term() :
                          t1 = new ASTMult(t1,t2);
                    else  t1 = new ASTDiv(t1,t2);
                  }  
-		)?
+		)*
      { return t1; } 
 }
 
@@ -170,7 +170,7 @@ ASTNode Fact() :
   ASTNode t2=null;
 }
 {
-   n=<DIGITS>    {  t1 = new ASTNum(Integer.parseInt(n.image)); return t1;}
+   n=<DIGITS> {  t1 = new ASTNum(Integer.parseInt(n.image)); return t1;}
    |
    <LPAR> t1=TopExp() <RPAR> { return t1; }
    |
@@ -180,24 +180,15 @@ ASTNode Fact() :
    |
    < PLUS > t1=Fact() { return t1; }
    |
-   < DEF > t1=Fact() < IN > t2=Fact() < END >
-   |
    n=<TRUE> { t1 = new ASTBoolean(true); return t1; } 
    | 
-   n=<FALSE> { t2 = new ASTBoolean(false); return t2; }
+   n=<FALSE> { t1 = new ASTBoolean(false); return t1; }
    |
-   n = < Id > { return new ASTId(n.image); }
+   n = <Id> { return new ASTId(n.image); }
    |
    t1 = Def() { return t1; }
    |
    < TIMES > t1 = Fact() { return new ASTDeRef(t1); }
-   /*{ 
-   	if(t2 != null)
-   		t1 = new ASTDef(n.image, t2);
-   	else
-   		t1 = new ASTId(n.image);
-   		
-	return t1; }*/
 }
 
 ASTNode Def():{
@@ -207,7 +198,7 @@ ASTNode Def():{
 {
   <DEF>
 	  ( n = <Id> <ASSOC> t1 = TopExp()
-	  { binds.add(new Binding(n.image,t1)); }
+	  { binds.add(new Binding(n.image, t1)); }
 	  )+
   <IN> t2 = TopExp() <END> {
 	    return new ASTDef(binds, t2);
