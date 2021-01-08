@@ -22,6 +22,7 @@ public class Environment<T> {
 			throw new DuplicateIdentifierException(id);
 
 		currentLevel.put(id, val);
+
 	}
 
 	public T find(String id) throws UndeclaredIdentifierException {

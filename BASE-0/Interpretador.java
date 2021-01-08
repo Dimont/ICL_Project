@@ -1,10 +1,11 @@
 import exceptions.DuplicateIdentifierException;
+import exceptions.TypeErrorException;
 import exceptions.UndeclaredIdentifierException;
 
 public class Interpretador {
 
 	@SuppressWarnings("static-access")
-	public static void main(String args[]) {
+	public static void main(String args[]) throws TypeErrorException {
 		Parser parser = new Parser(System.in);
 		ASTNode exp;
 		

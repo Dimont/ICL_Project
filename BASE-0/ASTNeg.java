@@ -15,9 +15,13 @@ public class ASTNeg implements ASTNode {
 	}
 	
 	@Override
-	public IValue eval(Environment<IValue> e) throws UndeclaredIdentifierException, DuplicateIdentifierException {
+	public IValue eval(Environment<IValue> e) throws UndeclaredIdentifierException, DuplicateIdentifierException, TypeErrorException {
+		IValue v1 = exp.eval(e);
+		if(v1 instanceof IntValue) {
+			return new IntValue(- ((IntValue) exp.eval(e)).getValue());
+		}
+        throw new TypeErrorException("+: argument is not an integer.");
 		
-		return new IntValue(- ((IntValue) exp.eval(e)).getValue());
 	}
 
 	@Override

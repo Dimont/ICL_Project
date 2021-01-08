@@ -9,45 +9,45 @@ public interface ParserConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int Id = 4;
+  int DIGITS = 4;
   /** RegularExpression Id. */
-  int DIGITS = 5;
+  int PLUS = 5;
   /** RegularExpression Id. */
-  int PLUS = 6;
+  int MINUS = 6;
   /** RegularExpression Id. */
-  int MINUS = 7;
+  int TIMES = 7;
   /** RegularExpression Id. */
-  int TIMES = 8;
+  int DIV = 8;
   /** RegularExpression Id. */
-  int DIV = 9;
+  int LPAR = 9;
   /** RegularExpression Id. */
-  int LPAR = 10;
+  int RPAR = 10;
   /** RegularExpression Id. */
-  int RPAR = 11;
+  int EOL = 11;
   /** RegularExpression Id. */
-  int EOL = 12;
+  int ASSOC = 12;
   /** RegularExpression Id. */
-  int ASSOC = 13;
+  int DEF = 13;
   /** RegularExpression Id. */
-  int DEF = 14;
+  int IN = 14;
   /** RegularExpression Id. */
-  int IN = 15;
+  int END = 15;
   /** RegularExpression Id. */
-  int END = 16;
+  int TRUE = 16;
   /** RegularExpression Id. */
-  int TRUE = 17;
+  int FALSE = 17;
   /** RegularExpression Id. */
-  int FALSE = 18;
+  int AND = 18;
   /** RegularExpression Id. */
-  int AND = 19;
+  int OR = 19;
   /** RegularExpression Id. */
-  int OR = 20;
+  int VAR = 20;
   /** RegularExpression Id. */
-  int VAR = 21;
+  int ASSIGN = 21;
   /** RegularExpression Id. */
-  int ASSIGN = 22;
+  int EQ = 22;
   /** RegularExpression Id. */
-  int EQ = 23;
+  int Id = 23;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -58,7 +58,6 @@ public interface ParserConstants {
     "\" \"",
     "\"\\t\"",
     "\"\\r\"",
-    "<Id>",
     "<DIGITS>",
     "\"+\"",
     "\"-\"",
@@ -78,6 +77,7 @@ public interface ParserConstants {
     "\"var\"",
     "\":=\"",
     "\"==\"",
+    "<Id>",
   };
 
 }

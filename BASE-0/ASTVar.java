@@ -16,9 +16,12 @@ public class ASTVar implements ASTNode {
 	}
 	
 	@Override
-	public IValue eval(Environment<IValue> env) throws UndeclaredIdentifierException, DuplicateIdentifierException {
+	public IValue eval(Environment<IValue> env) throws UndeclaredIdentifierException, DuplicateIdentifierException, TypeErrorException {
 		IValue val = exp.eval(env);
-		return new MemoryCellsValue(val);
+		if(val instanceof MemoryCellsValue) {
+			return new MemoryCellsValue(val);
+		}
+		throw new TypeErrorException("+: argument is not a reference.");
 	}
 	
 	@Override
