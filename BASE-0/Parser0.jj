@@ -1,5 +1,5 @@
 options {
-  
+  LOOKAHEAD =2;
   STATIC = false;
 }
 PARSER_BEGIN(Parser)
@@ -86,6 +86,10 @@ TOKEN :
   |
   < EQ:"==" >
   |
+  < WHILE:"while" >
+  |
+  < DO:"do" >
+  |
   < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* > 
  
 }
@@ -169,7 +173,7 @@ ASTNode Term() :{
 }
 
 ASTNode Fact() :
-{ Token n; 
+{ Token n, m; 
   ASTNode t1;
   ASTNode t2=null;
 }
@@ -193,8 +197,21 @@ ASTNode Fact() :
    t1 = Def() { return t1; }
    |
    < TIMES > t1 = Fact() { return new ASTDeRef(t1); }
+   | 
+   t1 = Assign() { return t1; }
    |
-   t1 = ifthen() { return t1; } 
+   t1 = dowhile() { return t1; } 
+}
+
+ASTNode Assign(): {
+    Token n;
+	ASTNode t1, t2;
+	ArrayList<Binding> binds = new ArrayList<Binding>(); }
+{
+  n = <Id> <ASSIGN> t1 = TopExp()
+  { binds.add(new Binding(n.image, t1)); }
+  t2 = TopExp()
+  { return new ASTAssign(t1, t2); }
 }
 
 ASTNode Def():{
@@ -208,6 +225,20 @@ ASTNode Def():{
 	  )+
   <IN> t2 = TopExp() <END> {
 	    return new ASTDef(binds, t2);
+	  }
+}
+
+ASTNode dowhile():
+{
+	Token n;
+	ASTNode t1, t2;
+}
+{
+  	<WHILE>
+	  ( n = <Id> <ASSOC> t1 = TopExp()
+	  )+
+  	<DO> t2 = TopExp() {
+	    return new ASTWhile(t1, t2);
 	  }
 }
 

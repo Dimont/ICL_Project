@@ -24,6 +24,10 @@ public class ASTDiv extends ASTBinOp {
         throw new TypeErrorException("+: argument is not an integer.");
 		
 	}
+	
+	public String toString() {
+		return lhs.toString() + " / " + rhs.toString();
+	}
 
 	/*public void compile(CodeBlock c, Environment e) {
 		lhs.compile(c, e);

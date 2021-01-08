@@ -41,13 +41,21 @@ public interface ParserConstants {
   /** RegularExpression Id. */
   int OR = 19;
   /** RegularExpression Id. */
-  int VAR = 20;
+  int IF = 20;
   /** RegularExpression Id. */
-  int ASSIGN = 21;
+  int THEN = 21;
   /** RegularExpression Id. */
-  int EQ = 22;
+  int VAR = 22;
   /** RegularExpression Id. */
-  int Id = 23;
+  int ASSIGN = 23;
+  /** RegularExpression Id. */
+  int EQ = 24;
+  /** RegularExpression Id. */
+  int WHILE = 25;
+  /** RegularExpression Id. */
+  int DO = 26;
+  /** RegularExpression Id. */
+  int Id = 27;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -74,9 +82,13 @@ public interface ParserConstants {
     "\"false\"",
     "\"&&\"",
     "\"||\"",
+    "\"if\"",
+    "\"then\"",
     "\"var\"",
     "\":=\"",
     "\"==\"",
+    "\"while\"",
+    "\"do\"",
     "<Id>",
   };
 
