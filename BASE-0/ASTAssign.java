@@ -4,6 +4,7 @@ import exceptions.UndeclaredIdentifierException;
 import tipos.IType;
 import tipos.TRef;
 import valores.IValue;
+import valores.IntValue;
 import valores.MemoryCellsValue;
 
 public class ASTAssign implements ASTNode {
@@ -16,11 +17,16 @@ public class ASTAssign implements ASTNode {
 		this.lhs = lhs; this.rhs = rhs;
 	}
 	
-	public IValue eval(Environment<IValue> e) throws UndeclaredIdentifierException, DuplicateIdentifierException {
+	public IValue eval(Environment<IValue> e) throws UndeclaredIdentifierException, DuplicateIdentifierException, TypeErrorException {
 		MemoryCellsValue mc = (MemoryCellsValue) lhs.eval(e);
-		IValue val = rhs.eval(e);
-		mc.setValue(val);
-		return val; 
+		if(mc instanceof MemoryCellsValue) {
+			IValue val = rhs.eval(e);
+			if(val instanceof IValue) {
+				mc.setValue(val);
+				return val; 
+			}
+		}
+        throw new TypeErrorException("+: argument is not an reference.");		
 	}
 	
     public String toString() {

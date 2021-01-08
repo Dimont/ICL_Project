@@ -19,19 +19,15 @@ public class ASTPlus extends ASTBinOp {
         rhs = r;
     }
 
-	public IValue eval(Environment<IValue> e) throws UndeclaredIdentifierException, DuplicateIdentifierException {
-		// TODO Auto-generated method stub
-		/*int f=0;
-        if(lhs==null) {
-        	int v2 = rhs.eval(e);
-        	f=v2;
-        }
-        else{
-        	int v1 = lhs.eval(e);
-        	int v2 = rhs.eval(e);
-        	f=v1+v2;
-        }*/
-        return new IntValue(((IntValue) lhs.eval(e)).getValue() + ((IntValue)rhs.eval(e)).getValue());
+	public IValue eval(Environment<IValue> e) throws UndeclaredIdentifierException, DuplicateIdentifierException, TypeErrorException {
+		IValue v1 = lhs.eval(e);
+		if(v1 instanceof IntValue) {
+			IValue v2 = rhs.eval(e);
+			if(v2 instanceof IntValue) {
+				return new IntValue(((IntValue) lhs.eval(e)).getValue() + ((IntValue)rhs.eval(e)).getValue());
+			}
+		}
+        throw new TypeErrorException("+: argument is not an integer.");
 	}
 	
 	public String toString() {

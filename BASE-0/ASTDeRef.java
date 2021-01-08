@@ -16,9 +16,12 @@ public class ASTDeRef implements ASTNode{
 	}
 	
 	@Override
-	public IValue eval(Environment<IValue> env) throws UndeclaredIdentifierException, DuplicateIdentifierException {
+	public IValue eval(Environment<IValue> env) throws UndeclaredIdentifierException, DuplicateIdentifierException, TypeErrorException {
 		MemoryCellsValue mcv = (MemoryCellsValue) exp.eval(env);
-		return mcv.getValue();
+		if(mcv instanceof MemoryCellsValue) {
+			return mcv.getValue();
+		}
+		throw new TypeErrorException("+: argument is not a reference.");		
 	}
 	@Override
 	public IType typecheck(Environment<IType> environment)

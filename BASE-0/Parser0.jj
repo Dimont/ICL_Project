@@ -44,8 +44,6 @@ SKIP :
 
 TOKEN :
 {
-   < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
-  |
   < DIGITS : (["0"-"9"])+ >  
   |
   < PLUS : "+" >
@@ -78,11 +76,17 @@ TOKEN :
   |
   < OR:"||" >
   |
+  < IF:"if" >
+  |
+  < THEN:"then" >
+  |
   < VAR:"var" >
   |
   < ASSIGN:":=" >
   |
   < EQ:"==" >
+  |
+  < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* > 
  
 }
 
@@ -189,6 +193,8 @@ ASTNode Fact() :
    t1 = Def() { return t1; }
    |
    < TIMES > t1 = Fact() { return new ASTDeRef(t1); }
+   |
+   t1 = ifthen() { return t1; } 
 }
 
 ASTNode Def():{
@@ -204,3 +210,17 @@ ASTNode Def():{
 	    return new ASTDef(binds, t2);
 	  }
 }
+
+ASTNode ifthen(): {
+	Token n;
+	ASTNode t1, t2;
+	ArrayList<Binding> binds = new ArrayList<Binding>(); }
+{ 
+	<IF>
+	  ( n = <Id> <ASSOC> t1 = TopExp()
+	  { binds.add(new Binding(n.image, t1)); }
+	  )+
+  <THEN> t2 = TopExp() <END> {
+	    return new ASTDef(binds, t2);
+	  }
+  }

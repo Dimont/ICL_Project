@@ -26,12 +26,12 @@ public class Environment<T> {
 	}
 
 	void assoc(String	id,	T val) throws DuplicateIdentifierException{
-		for(Assoc<T> asso: assoc) {
+		/*for(Assoc<T> asso: assoc) {
 			if(asso.id.equals(id)) {
 				throw new DuplicateIdentifierException(id);
 			}
 		}
-		assoc.add(new Assoc<T>(id, val));
+		assoc.add(new Assoc<T>(id, val));*/
 		
 		 try {
 			if(currentLevel.containsKey(id))

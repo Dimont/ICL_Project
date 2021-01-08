@@ -18,9 +18,16 @@ public class ASTEq implements ASTNode{
 	}
 	
 	@Override
-	public IValue eval(Environment<IValue> env) throws UndeclaredIdentifierException, DuplicateIdentifierException {
-		
-		return new BoolValue(((IntValue) lhs.eval(env)).getValue() == ((IntValue) rhs.eval(env)).getValue());
+	public IValue eval(Environment<IValue> env) throws UndeclaredIdentifierException, DuplicateIdentifierException, TypeErrorException {
+		IValue v1 = lhs.eval(env);
+		if(v1 instanceof IntValue) {
+			IValue v2 = rhs.eval(env);
+			if(v2 instanceof IntValue) {
+				//BoolValue or IntValue ???
+				return new BoolValue(((IntValue) lhs.eval(env)).getValue() == ((IntValue) rhs.eval(env)).getValue());
+			}
+		}
+        throw new TypeErrorException("+: argument is not an integer.");
 	}
 
 	@Override
